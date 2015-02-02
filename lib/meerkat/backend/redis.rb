@@ -6,8 +6,8 @@ module Meerkat
       def initialize(redis_uri = nil)
         @subs = {}
         EM.next_tick do
-          @sub = EM::Hiredis.connect redis_uri 
-          @pub = EM::Hiredis.connect redis_uri 
+          @sub = EM::Hiredis.connect(redis_uri).pubsub
+          @pub = EM::Hiredis.connect(redis_uri).pubsub
           @sub.on :pmessage do |topic, channel, message|
             @subs[topic].each { |cb| cb.call channel, message }
           end
